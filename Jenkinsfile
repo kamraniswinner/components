@@ -3,28 +3,53 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "kamran7777777/components"
-        // Optional: Add default environment variables here
-        // REACT_APP_BACKEND_URL = "http://api.k8s.dearsoft.tech"
+        //SONARQUBE_TOKEN = credentials('sonarqube-token') // Update with your SonarQube token
+        //SONAR_HOST_URL = 'http://localhost:9000' // Replace with your SonarQube host URL
+        //SCANNER_CLI_VERSION = '4.8.0.2856' // Change version as needed
+        //JAVA_HOME = '/usr/lib/jvm/java-1.17.0-openjdk-amd64' // Update this path to your Java 17 installation
+        //SNYK_TOKEN = credentials('21db75b6-b23c-4b44-9e8e-02685993df22') // Update with your Snyk token
+        //DEPENDENCY_CHECK_HOME = "${env.WORKSPACE}/Downloads/dependency-check"
+        //SONAR_NODEJS_EXECUTABLE = '/usr/bin/node' // Path to Node.js executable
     }
 
     stages {
+        stage('Check Node.js Version') {
+            steps {
+                sh 'node -v' // checking node version
+                sh 'npm -v' 
+            }
+        }
+
         stage('Checkout') {
             steps {
-                git branch: 'master', 
-                    credentialsId: 'github-token', 
-                    url: 'https://github.com/kamraniswinner/components.git'
+                git 'https://github.com/kamraniswinner/components.git'
             }
         }
 
         stage('Check Project Directory') {
             steps {
                 script {
-                    def packageJson = "${workspace}/package.json"
+                    def packageJson = "${env.WORKSPACE}/package.json"
                     if (fileExists(packageJson)) {
                         echo "package.json found at ${packageJson}."
                     } else {
                         error "package.json not found at ${packageJson}."
                     }
+                }
+            }
+        }
+
+        stage('Update Dependencies'){
+            steps {
+                script {
+                    sh '''
+                        echo "Checking for outdated dependencies..."
+                        npm outdated || echo "Error occurred during npm outdated"
+                        echo "Updating dependencies..."
+                        npm update --silent || echo "Error occurred during npm update"
+                        echo "Reinstalling updated dependencies..."
+                        npm install || echo "Error occurred installing npm update"
+                    '''
                 }
             }
         }
@@ -41,11 +66,11 @@ pipeline {
             }
         }
 
+        
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build the Docker image with the environment variable
-                    sh "docker build --build-arg REACT_APP_BACKEND_URL=http://api.k8s.dearsoft.tech -t ${DOCKER_IMAGE}:latest ."
+                   sh "docker build -t ${DOCKER_IMAGE}:latest ."
                 }
             }
         }
@@ -78,3 +103,4 @@ pipeline {
             echo 'Build failed!'
         }
     }
+}
