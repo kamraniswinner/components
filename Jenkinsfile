@@ -15,6 +15,7 @@ pipeline {
     stages {
         stage('Check Node.js Version') {
             steps {
+                sudo apt-get install -y nodejs
                 sh 'node -v' // checking node version
                 sh 'npm -v' 
             }
