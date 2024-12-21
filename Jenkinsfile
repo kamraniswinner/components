@@ -66,6 +66,13 @@ pipeline {
             }
         }
 
+        
+        stage('Checkout Code') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Debug Workspace') {
             steps {
                 script {
