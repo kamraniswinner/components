@@ -1,21 +1,25 @@
-# Stage 1: Build the React app
-FROM node:14-alpine AS build
+FROM node:14-alpine
 
+# Set working directory
 WORKDIR /app
 
+# Copy package.json and lock file
 COPY package*.json ./
-RUN npm install --legacy-peer-deps
 
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the app files
 COPY . .
-RUN npm run build
 
-# Debugging step: Confirm build output
-RUN ls -l /app && ls -l /app/dist
+# Build the React app
+RUN npm run build && ls -l /app/dist
 
-# Stage 2: Serve the app with Nginx
+# Copy build output to Nginx folder
+RUN if [ -d "/app/dist" ] && [ "$(ls -A /app/dist)" ]; then echo "Build directory exists and is not empty"; else echo "Build directory is empty or missing"; exit 1; fi
+
+# Use Nginx to serve the app
 FROM nginx:alpine
-
-COPY --from=build /app/dist /usr/share/nginx/html
-
+COPY --from=0 /app/dist /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
