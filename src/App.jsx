@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import ProductList from './components/productList.jsx';
-import Cart from './pages/Cart.jsx';
 import Transitions from './pages/Transitions';
 import Animations from './pages/Animations';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -41,7 +40,6 @@ function App() {
         <Header />
         <Routes>
           <Route path="/" element={<ProductList />} />
-          <Route path="/cart" element={<Cart />} />
           <Route path="/transitions" element={<Transitions />} />
           <Route path="/animations" element={<Animations />} />
           <Route path="/positioning" element={<Positioning />} />
