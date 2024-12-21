@@ -13,7 +13,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: 'dist', // Specify the output directory
+    outDir: 'build', // Specify the output directory
     sourcemap: true, // Enable sourcemaps for debugging
   },
   server: {

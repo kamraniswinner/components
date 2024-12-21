@@ -1,25 +1,28 @@
-FROM node:14-alpine
+# Stage 1: Build the React app
+FROM node:14-alpine AS build
 
-# Set working directory
+# Set the working directory
 WORKDIR /app
 
-# Copy package.json and lock file
+# Copy package.json and package-lock.json
 COPY package*.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy the rest of the app files
+# Copy the entire project to the container
 COPY . .
 
-# Build the React app
-RUN npm run build && ls -l /app/dist
+RUN npm run build
 
-# Copy build output to Nginx folder
-RUN if [ -d "/app/dist" ] && [ "$(ls -A /app/dist)" ]; then echo "Build directory exists and is not empty"; else echo "Build directory is empty or missing"; exit 1; fi
-
-# Use Nginx to serve the app
+# Stage 2: Serve the app with Nginx
 FROM nginx:alpine
-COPY --from=0 /app/dist /usr/share/nginx/html
+
+# Copy the build output from the previous stage to the Nginx html directory
+COPY --from=build /app/build /usr/share/nginx/html
+
+# Expose port 80
 EXPOSE 80
+
+# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
