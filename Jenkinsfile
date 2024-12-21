@@ -66,6 +66,15 @@ pipeline {
             }
         }
 
+        stage('Debug Workspace') {
+            steps {
+                script {
+                    sh 'ls -l /home/kamran1/.jenkins/workspace/components/my-app'
+                }
+            }
+        }   
+
+
         
         stage('Build Docker Image') {
             steps {
