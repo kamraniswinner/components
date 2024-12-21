@@ -69,8 +69,10 @@ pipeline {
         
         stage('Build Docker Image') {
             steps {
-                script {
-                   sh "docker build -t ${DOCKER_IMAGE}:latest ."
+                dir('my-app') {
+                    script {
+                         sh "docker build -t ${DOCKER_IMAGE}:latest ."
+                    }
                 }
             }
         }
