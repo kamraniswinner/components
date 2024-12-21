@@ -1,0 +1,1 @@
+{"version":3,"file":"LazyComponent-CWUn4AHZ.js","sources":["../../src/components/LazyComponent.jsx"],"sourcesContent":["import React from 'react';\r\n\r\nconst LazyComponent = () => {\r\n  return <div>Lazy Loaded Component</div>;\r\n};\r\n\r\nexport default LazyComponent;\r\n"],"names":["LazyComponent","jsx"],"mappings":"wCAEA,MAAMA,EAAgB,IACbC,EAAA,IAAC,OAAI,SAAqB,uBAAA,CAAA"}
