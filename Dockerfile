@@ -13,12 +13,12 @@ RUN npm install
 # Copy the entire project to the container
 COPY . .
 
-# Set build arguments for environment variables
-# ARG REACT_APP_BACKEND_URL
-# ENV REACT_APP_BACKEND_URL=${REACT_APP_BACKEND_URL}
-
 # Build the React app
 RUN npm run build
+
+# Debug: List files to ensure build success
+RUN ls -l /app
+RUN ls -l /app/build
 
 # Stage 2: Serve the app with Nginx
 FROM nginx:alpine
